@@ -49,6 +49,18 @@ class WPL_Testimonals {
 		// Global Actions
 		add_action( 'init', array( 'WPL_Testimonals', 'setup' ) );
 		add_filter( 'gettext', array( 'WPL_Testimonals', 'gettext' ), 5, 3 );
+
+		// Admin / AJAX / Front end only
+		if ( is_admin() ) {
+			if ( defined('DOING_AJAX') && DOING_AJAX ) {
+				// AJAX only
+			} else {
+				require_once( WPL_Testimonals::$DIR . 'admin/admin.php' );
+				WPL_Testimonals_Admin::load();
+			}
+		} else {
+			// Front end only
+		}
 	}
 
 	/**
