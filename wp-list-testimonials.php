@@ -3,10 +3,11 @@
 /*
 Plugin Name: WP List Testimonials
 Plugin URI: http://www.benhuson.co.uk/wordpress-plugins/wp-list-testimonials/
-Description: Outputs testimonials based on information from your blogroll.
+Description: Manage and display testimonials on your site.
+Version: 2.0.dev
 Author: Ben Huson
-Author URI: http://www.benhuson.co.uk
-Version: 2.0
+Author URI: https://github.com/benhuson/wp-list-testimonials
+License: GPL
 */
 
 /*
@@ -23,209 +24,136 @@ GNU General Public License for more details.
 http://www.gnu.org/licenses/gpl.html
 */
 
-/**
- * WP List Testimonials Class
- */
-class WP_List_Testimonials {
+add_action( 'plugins_loaded', array( 'WPL_Testimonals', 'load' ), 5 );
 
-	var $is_wp_2_8 = false;
+class WPL_Testimonals {
 
-	/**
-	 * Constructor
-	 */
-	function WP_List_Testimonials() {
-
-		// Check WordPress version
-		if ( version_compare( get_bloginfo( 'version' ), '2.7.2', '>' ) ) {
-			$this->is_wp_2_8 = true;
-		}
-	}
+	// Paths
+	public static $SUBDIR = null;
+	public static $URL = null;
+	public static $DIR = null;
 
 	/**
-	 * Get Testimonials HTML
+	 * Load
 	 */
-	function get_testimonials_html( $args = '' ) {
-		extract( wp_parse_args( $args ), EXTR_SKIP );
+	function load() {
 
-		$output = '';
-		$bookmarks = get_bookmarks( $args );
-		$count = 0;
+		// Define Paths
+		WPL_Testimonals::$SUBDIR = '/' . str_replace( basename( __FILE__ ), '', plugin_basename( __FILE__ ) );
+		WPL_Testimonals::$URL = plugins_url( WPL_Testimonals::$SUBDIR );
+		WPL_Testimonals::$DIR = plugin_dir_path( __FILE__ );
 
-		foreach ( $bookmarks as $bookmark ) {
-			if ( $maxlimit > 0 && $count >= $maxlimit )
-				break;
+		// Deprecated Blogroll Functionality
+		require_once( WPL_Testimonals::$DIR . 'includes/deprecated.php' );
 
-			if ( ! empty( $bookmark->link_notes ) ) {
-				$output .= '<blockquote class="testimonial testimonial-' . $bookmark->link_id . '">' . "\n";
-				$output .= '<p>' . $bookmark->link_notes . '</p>' . "\n";
-				if ( ! empty( $bookmark->link_name ) ) {
-					$description = '';
-					if ( ! empty( $bookmark->link_description ) ) {
-						$description = ', <span class="testimonialdescription">' . $bookmark->link_description . '</span>';
-					}
-					$link_name = $bookmark->link_name;
-					if ( ! empty( $bookmark->link_url ) && $bookmark->link_url != '#' ) {
-						$link_name = '<a href="' . $bookmark->link_url . '" class="testimonialname">' . $link_name . '</a>';
-					} else {
-						$link_name = '<span class="testimonialname">' . $link_name . '</span>';
-					}
-					$output .= '<cite>' . $link_name . $description . '</cite>' . "\n";
-				}
-				$output .= '</blockquote>' . "\n\n";
-				$count++;
-			}
-		}
-
-		if ( ! empty( $output ) ) {
-			$output = '<div class="wp-list-testimonials">' . $output . '</div>';
-		}
-
-		echo $output;
+		// Global Actions
+		add_action( 'init', array( 'WPL_Testimonals', 'setup' ) );
+		add_filter( 'gettext', array( 'WPL_Testimonals', 'gettext' ), 5, 3 );
 	}
 
 	/**
-	 * Widgets Init
+	 * Text String Filter
 	 */
-	function widgets_init() {
-		global $wp_list_testimonials;
+	function gettext( $translated_text, $text, $domain ) {
+		if ( is_admin() ) {
+			$screen = '';
+			if ( function_exists( 'get_current_screen' ) )
+				$screen = get_current_screen();
+			if ( ! is_object( $screen ) )
+				return $translated_text;
 
-		if ( $wp_list_testimonials->is_wp_2_8 ) {
-			register_widget( 'WP_List_Testimonials_Widget' );
+			if ( $screen->id == 'wpl_testimonial' ) {
+				switch ( $translated_text ) {
+					case 'Enter title here' :
+						$translated_text = __( 'Enter name here', 'wpl_testimonials' );
+						break;
+				}
+			}
 		}
+		return $translated_text;
+	}
+
+	/**
+	 * Setup
+	 */
+	function setup() {
+		WPL_Testimonals::register_testimonal_post_type();
+		WPL_Testimonals::register_testimonal_group_taxonomy();
+	}
+
+	/**
+	 * Register Testimonal Post Type
+	 */
+	function register_testimonal_post_type() {
+		$labels = array(
+			'name'               => __( 'Testimonals', 'wpl_testimonials' ),
+			'singular_name'      => __( 'Testimonal', 'wpl_testimonials' ),
+			'menu_name'          => __( 'Testimonals', 'wpl_testimonials' ),
+			'add_new'            => __( 'Add New', 'wpl_testimonials' ),
+			'add_new_item'       => __( 'Add New Testimonal', 'wpl_testimonials' ),
+			'edit_item'          => __( 'Edit Testimonal', 'wpl_testimonials' ),
+			'new_item'           => __( 'New Testimonal', 'wpl_testimonials' ),
+			'all_items'          => __( 'All Testimonals', 'wpl_testimonials' ),
+			'view_item'          => __( 'View Testimonal', 'wpl_testimonials' ),
+			'search_items'       => __( 'Search Testimonals', 'wpl_testimonials' ),
+			'not_found'          => __( 'No testimonals found', 'wpl_testimonials' ),
+			'not_found_in_trash' => __( 'No testimonals found in Trash', 'wpl_testimonials' ),
+			'parent_item_colon'  => ''
+		);
+		$args = array(
+			'labels'              => $labels,
+			'description'         => __( 'Testimonials.', 'wpl_testimonials' ),
+			'public'              => true,
+			'exclude_from_search' => false,
+			'publicly_queryable'  => true,
+			'show_ui'             => true,
+			'show_in_nav_menus'   => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => true,
+			'menu_position'       => null,
+			'menu_icon'           => null, // @todo
+			'hierarchical'        => false,
+			'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions' ),
+			'has_archive'         => _x( 'testimonials', 'slug', 'wpl_testimonials' ),
+			'rewrite'             => array(
+				'slug'       => _x( 'testimonials', 'slug', 'wpl_testimonials' ),
+				'with_front' => false,
+				'feeds'      => true
+			),
+			'query_var'           => true
+		); 
+		register_post_type( 'wpl_testimonial', $args );
+	}
+
+	/**
+	 * Register Testimonal Group Taxonomy
+	 */
+	function register_testimonal_group_taxonomy() {
+		$labels = array(
+			'name'              => _x( 'Groups', 'taxonomy general name' ),
+			'singular_name'     => _x( 'Group', 'taxonomy singular name' ),
+			'menu_name'         => __( 'Groups' ),
+			'all_items'         => __( 'All Groups' ),
+			'edit_item'         => __( 'Edit Testimonial Group' ),
+			'view_item'         => __( 'View Testimonial Group' ),
+			'update_item'       => __( 'Update Testimonial Group' ),
+			'new_item_name'     => __( 'New Testimonial Group Name' ),
+			'search_items'      => __( 'Search Testimonial Groups' ),
+			'add_new_item'      => __( 'Add New Testimonial Group' ),
+			'not_found'         => __( 'No testimonial groups found.' ),
+		);
+		$args = array(
+			'hierarchical'      => true,
+			'labels'            => $labels,
+			'public'            => true,
+			'show_admin_column' => true,
+			'query_var'         => true,
+			'rewrite'            => array(
+				'slug'       => _x( 'testimonials/group', 'slug', 'wpl_testimonials' ),
+				'with_front' => false
+			),
+		);
+		register_taxonomy( 'wpl_testimonial_group', array( 'wpl_testimonial' ), $args );
 	}
 
 }
-
-/**
- * Template Tag: wp_list_testimonials
- */
-function wp_list_testimonials( $args = '' ) {
-	global $wp_list_testimonials;
-	$wp_list_testimonials->get_testimonials_html( $args );
-}
-
-/**
- * WP List Testimonials Widget
- * (only if using WordPress 2.8+)
- */
-if ( class_exists('WP_Widget') ) {
-
-	class WP_List_Testimonials_Widget extends WP_Widget {
-
-		/**
-		 * Constructor
-		 */
-		function WP_List_Testimonials_Widget() {
-			$widget_ops = array(
-				'classname' => 'widget_testimonials',
-				'description' => 'Add testimonials to your sidebar.'
-			);
-			$this->WP_Widget( 'testimonials', 'Testimonials', $widget_ops );
-		}
-
-		/**
-		 * Output Widget
-		 */
-		function widget( $args, $instance ) {
-			global $wp_list_testimonials;
-
-			extract( $args, EXTR_SKIP );
-
-			echo $before_widget;
-			$title = empty( $instance['title'] ) ? '' : apply_filters( 'widget_title', $instance['title'] );
-
-			if ( ! empty( $title ) ) {
-				echo $before_title . $title . $after_title;
-			}
-
-			$my_args = '';
-
-			if ( $instance['limit'] > 0 ) {
-				if ( ! empty( $my_args ) ) {
-					$my_args .= '&';
-				}
-				$my_args .= 'maxlimit=' . $instance['limit'];
-			}
-			if ( $instance['category'] > 0 ) {
-				if ( ! empty( $my_args ) ) {
-					$my_args .= '&';
-				}
-				$my_args .= 'category=' . $instance['category'];
-			}
-			if ( ! empty( $instance['sort'] ) ) {
-				if ( ! empty( $my_args ) ) {
-					$my_args .= '&';
-				}
-				$my_args .= 'orderby=' . $instance['sort'];
-			}
-
-			$wp_list_testimonials->get_testimonials_html( $my_args );
-
-			echo $after_widget;
-		}
-
-		/**
-		 * Update Widget Settings
-		 */
-		function update( $new_instance, $old_instance ) {
-			$instance = $old_instance;
-
-			$instance['title']    = strip_tags( $new_instance['title'] );
-			$instance['category'] = intval( $new_instance['category'] );
-			$instance['sort']     = strip_tags( $new_instance['sort'] );
-			$instance['limit']    = intval( $new_instance['limit'] );
-
-			return $instance;
-		}
-
-		/**
-		 * Widget Settings
-		 */
-		function form( $instance ) {
-			$instance = wp_parse_args( (array)$instance, array( 'title' => '' ) );
-
-			$title    = strip_tags( $instance['title'] );
-			$category = strip_tags( $instance['category'] );
-			$sort     = strip_tags( $instance['sort'] );
-			$limit    = strip_tags( $instance['limit'] );
-
-			$link_cats = get_terms( 'link_category' );
-
-			?>
-			<p><label for="<?php echo $this->get_field_id( 'title' ); ?>">Title: <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo attribute_escape( $title ); ?>" /></label></p>
-			<p>
-				<label for="<?php echo $this->get_field_id( 'category' ); ?>">Category:
-					<select class="widefat" id="<?php echo $this->get_field_id( 'category' ); ?>" name="<?php echo $this->get_field_name( 'category' ); ?>">
-						<option value=""><?php _e('All Links'); ?></option>
-						<?php
-						foreach ( $link_cats as $link_cat ) {
-							echo '<option value="' . intval( $link_cat->term_id ) . '"' . ( $link_cat->term_id == $instance['category'] ? ' selected="selected"' : '' ) . '>' . $link_cat->name . "</option>\n";
-						}
-						?>
-					</select>
-				</label>
-			<p>
-			<p>
-				<label for="<?php echo $this->get_field_id( 'sort' ); ?>">Order by:
-					<select class="widefat" id="<?php echo $this->get_field_id( 'sort' ); ?>" name="<?php echo $this->get_field_name( 'sort' ); ?>">
-						<option value="">Name</option>
-						<option value="updated"<?php echo $instance['sort'] == 'updated' ? ' selected="selected"' : ''; ?>>Most Recently Updated</option>
-						<option value="rating"<?php echo $instance['sort'] == 'rating' ? ' selected="selected"' : ''; ?>>Highest Rating</option>
-						<option value="rand"<?php echo $instance['sort'] == 'rand' ? ' selected="selected"' : ''; ?>>Random</option>
-					</select>
-				</label>
-			</p>
-			<p><label for="<?php echo $this->get_field_id( 'limit' ); ?>">Number to show: <input id="<?php echo $this->get_field_id( 'limit' ); ?>" name="<?php echo $this->get_field_name( 'limit' ); ?>" type="text" value="<?php echo attribute_escape( $limit ); ?>" size="3" /></label></p>
-			<?php
-		}
-
-	}
-
-}
-
-// Init.
-global $wp_list_testimonials;
-$wp_list_testimonials = new WP_List_Testimonials();
-
-// Hooks
-add_action( 'widgets_init', array( $wp_list_testimonials, 'widgets_init' ) );
