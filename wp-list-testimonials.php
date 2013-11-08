@@ -134,7 +134,7 @@ class WPL_Testimonals {
 			),
 			'query_var'           => true
 		); 
-		register_post_type( 'wpl_testimonial', $args );
+		register_post_type( 'wpl_testimonial', apply_filters( 'wpl_testimonals_post_type_args', $args ) );
 	}
 
 	/**
@@ -165,7 +165,7 @@ class WPL_Testimonals {
 				'with_front' => false
 			),
 		);
-		register_taxonomy( 'wpl_testimonial_group', array( 'wpl_testimonial' ), $args );
+		register_taxonomy( 'wpl_testimonial_group', array( 'wpl_testimonial' ), apply_filters( 'wpl_testimonals_taxonomy_group_args', $args ) );
 	}
 
 }
