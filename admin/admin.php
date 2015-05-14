@@ -11,13 +11,13 @@ class WPL_Testimonals_Admin {
 	 * Add Meta Boxes
 	 */
 	function add_meta_boxes() {
-		add_meta_box( 'wpl_testimonials_client', __( "Client Information", 'wpl_testimonials' ), array( 'WPL_Testimonals_Admin', 'client_meta_box' ), 'wpl_testimonial', 'normal', 'high' );
+		add_meta_box( 'wpl_testimonials_client', __( 'Testimonial Author Details', 'wpl_testimonials' ), array( 'WPL_Testimonals_Admin', 'testimonial_author_details_meta_box' ), 'wpl_testimonial', 'normal', 'high' );
 	}
 
 	/**
-	 * Client Meta Box
+	 * Testimonial Author Details Meta Box
 	 */
-	function client_meta_box() {
+	function testimonial_author_details_meta_box() {
 		wp_nonce_field( plugin_basename( __FILE__ ), '_nonce_wpl_testimonials_client' );
 
 		$jobtitle = get_post_meta( get_the_ID(), '_wpl_testimonials_jobtitle', true );
