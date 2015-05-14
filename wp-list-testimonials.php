@@ -26,6 +26,9 @@ http://www.gnu.org/licenses/gpl.html
 
 add_action( 'plugins_loaded', array( 'WPL_Testimonals', 'load' ), 5 );
 
+/**
+ * WPL Testimonials Class
+ */
 class WPL_Testimonals {
 
 	// Paths
@@ -65,6 +68,7 @@ class WPL_Testimonals {
 		} else {
 			// Front end only
 		}
+
 	}
 
 	/**
@@ -91,55 +95,75 @@ class WPL_Testimonals {
 
 	/**
 	 * Text String Filter
+	 *
+	 * @param   string  $translated_text  Translated text.
+	 * @param   string  $text             Text.
+	 * @param   string  $domain           Domain.
+	 * @return  string                    Filtered text.
 	 */
 	public static function gettext( $translated_text, $text, $domain ) {
+
 		if ( is_admin() ) {
+
 			$screen = '';
-			if ( function_exists( 'get_current_screen' ) )
+
+			if ( function_exists( 'get_current_screen' ) ) {
 				$screen = get_current_screen();
-			if ( ! is_object( $screen ) )
+			}
+
+			if ( ! is_object( $screen ) ) {
 				return $translated_text;
+			}
 
 			if ( $screen->id == self::post_type() ) {
+
 				switch ( $translated_text ) {
+
 					case 'Enter title here' :
 						$translated_text = __( 'Enter name here', 'wpl_testimonials' );
 						break;
+
 				}
+
 			}
+
 		}
+
 		return $translated_text;
+
 	}
 
 	/**
 	 * Setup
 	 */
 	public static function setup() {
+
 		WPL_Testimonals::register_testimonal_post_type();
 		WPL_Testimonals::register_testimonal_group_taxonomy();
+
 	}
 
 	/**
 	 * Register Testimonal Post Type
 	 */
 	public static function register_testimonal_post_type() {
-		$labels = array(
-			'name'               => __( 'Testimonals', 'wpl_testimonials' ),
-			'singular_name'      => __( 'Testimonal', 'wpl_testimonials' ),
-			'menu_name'          => __( 'Testimonals', 'wpl_testimonials' ),
-			'add_new'            => __( 'Add New', 'wpl_testimonials' ),
-			'add_new_item'       => __( 'Add New Testimonal', 'wpl_testimonials' ),
-			'edit_item'          => __( 'Edit Testimonal', 'wpl_testimonials' ),
-			'new_item'           => __( 'New Testimonal', 'wpl_testimonials' ),
-			'all_items'          => __( 'All Testimonals', 'wpl_testimonials' ),
-			'view_item'          => __( 'View Testimonal', 'wpl_testimonials' ),
-			'search_items'       => __( 'Search Testimonals', 'wpl_testimonials' ),
-			'not_found'          => __( 'No testimonals found', 'wpl_testimonials' ),
-			'not_found_in_trash' => __( 'No testimonals found in Trash', 'wpl_testimonials' ),
-			'parent_item_colon'  => ''
-		);
+
 		$args = array(
-			'labels'              => $labels,
+			'labels'              => array(
+				'name'               => __( 'Testimonals', 'wpl_testimonials' ),
+				'singular_name'      => __( 'Testimonal', 'wpl_testimonials' ),
+				'menu_name'          => __( 'Testimonals', 'wpl_testimonials' ),
+				'add_new'            => __( 'Add New', 'wpl_testimonials' ),
+				'add_new_item'       => __( 'Add New Testimonal', 'wpl_testimonials' ),
+				'edit_item'          => __( 'Edit Testimonal', 'wpl_testimonials' ),
+				'new_item'           => __( 'New Testimonal', 'wpl_testimonials' ),
+				'all_items'          => __( 'All Testimonals', 'wpl_testimonials' ),
+				'view_item'          => __( 'View Testimonal', 'wpl_testimonials' ),
+				'search_items'       => __( 'Search Testimonals', 'wpl_testimonials' ),
+				'not_found'          => __( 'No testimonals found', 'wpl_testimonials' ),
+				'not_found_in_trash' => __( 'No testimonals found in Trash', 'wpl_testimonials' ),
+				'parent_item_colon'  => ''
+			),
 			'description'         => __( 'Testimonials.', 'wpl_testimonials' ),
 			'public'              => true,
 			'exclude_from_search' => false,
@@ -159,30 +183,32 @@ class WPL_Testimonals {
 				'feeds'      => true
 			),
 			'query_var'           => true
-		); 
+		);
+
 		register_post_type( self::post_type(), apply_filters( 'wpl_testimonals_post_type_args', $args ) );
+
 	}
 
 	/**
 	 * Register Testimonal Group Taxonomy
 	 */
 	public static function register_testimonal_group_taxonomy() {
-		$labels = array(
-			'name'              => _x( 'Groups', 'taxonomy general name' ),
-			'singular_name'     => _x( 'Group', 'taxonomy singular name' ),
-			'menu_name'         => __( 'Groups' ),
-			'all_items'         => __( 'All Groups' ),
-			'edit_item'         => __( 'Edit Testimonial Group' ),
-			'view_item'         => __( 'View Testimonial Group' ),
-			'update_item'       => __( 'Update Testimonial Group' ),
-			'new_item_name'     => __( 'New Testimonial Group Name' ),
-			'search_items'      => __( 'Search Testimonial Groups' ),
-			'add_new_item'      => __( 'Add New Testimonial Group' ),
-			'not_found'         => __( 'No testimonial groups found.' ),
-		);
+
 		$args = array(
 			'hierarchical'      => true,
-			'labels'            => $labels,
+			'labels'            => array(
+				'name'              => _x( 'Groups', 'taxonomy general name' ),
+				'singular_name'     => _x( 'Group', 'taxonomy singular name' ),
+				'menu_name'         => __( 'Groups' ),
+				'all_items'         => __( 'All Groups' ),
+				'edit_item'         => __( 'Edit Testimonial Group' ),
+				'view_item'         => __( 'View Testimonial Group' ),
+				'update_item'       => __( 'Update Testimonial Group' ),
+				'new_item_name'     => __( 'New Testimonial Group Name' ),
+				'search_items'      => __( 'Search Testimonial Groups' ),
+				'add_new_item'      => __( 'Add New Testimonial Group' ),
+				'not_found'         => __( 'No testimonial groups found.' ),
+			),
 			'public'            => true,
 			'show_admin_column' => true,
 			'query_var'         => true,
@@ -191,7 +217,9 @@ class WPL_Testimonals {
 				'with_front' => false
 			),
 		);
+
 		register_taxonomy( self::group_tax(), array( self::post_type() ), apply_filters( 'wpl_testimonals_taxonomy_group_args', $args ) );
+
 	}
 
 }
