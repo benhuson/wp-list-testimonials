@@ -96,7 +96,8 @@ class WPL_Testimonals_Admin {
 		$values = wp_parse_args( $_POST['wpl_testimonials'], array(
 			'jobtitle' => '',
 			'company'  => '',
-			'location' => ''
+			'location' => '',
+			'link'     => ''
 		) );
 
 		update_post_meta( $post_id, '_wpl_testimonials_jobtitle', $values['jobtitle'] );
