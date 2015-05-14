@@ -26,15 +26,14 @@ class WPL_Testimonals_Admin {
 
 	/**
 	 * Testimonial Author Details Meta Box
+	 *
+	 * @param  WP_Post  $post  Post object.
 	 */
-	public static function testimonial_author_details_meta_box() {
+	public static function testimonial_author_details_meta_box( $post ) {
 
 		wp_nonce_field( plugin_basename( __FILE__ ), '_nonce_wpl_testimonials_client' );
 
-		$jobtitle = get_post_meta( get_the_ID(), '_wpl_testimonials_jobtitle', true );
-		$company  = get_post_meta( get_the_ID(), '_wpl_testimonials_company', true );
-		$location = get_post_meta( get_the_ID(), '_wpl_testimonials_location', true );
-		$link     = get_post_meta( get_the_ID(), '_wpl_testimonials_link', true );
+		$testimonial = new WPL_Testimonal( $post->ID );
 
 		?>
 
@@ -42,19 +41,19 @@ class WPL_Testimonals_Admin {
 			<tbody>
 				<tr valign="top">
 					<th scope="row"><label for="wpl_testimonials_jobtitle"><?php esc_html_e( 'Job Title', 'wpl_testimonials' ); ?></label></th>
-					<td><input name="wpl_testimonials[jobtitle]" id="wpl_testimonials_jobtitle" type="text" value="<?php esc_attr_e( $jobtitle ); ?>" class="large-text"></td>
+					<td><input name="wpl_testimonials[jobtitle]" id="wpl_testimonials_jobtitle" type="text" value="<?php esc_attr_e( $testimonial->get_meta( 'jobtitle' ) ); ?>" class="large-text"></td>
 				</tr>
 				<tr valign="top">
 					<th scope="row"><label for="wpl_testimonials_company"><?php esc_html_e( 'Company', 'wpl_testimonials' ); ?></label></th>
-					<td><input name="wpl_testimonials[company]" id="wpl_testimonials_company" type="text" value="<?php esc_attr_e( $company ); ?>" class="large-text"></td>
+					<td><input name="wpl_testimonials[company]" id="wpl_testimonials_company" type="text" value="<?php esc_attr_e( $testimonial->get_meta( 'company' ) ); ?>" class="large-text"></td>
 				</tr>
 				<tr valign="top">
 					<th scope="row"><label for="wpl_testimonials_location"><?php esc_html_e( 'Location', 'wpl_testimonials' ); ?></label></th>
-					<td><input name="wpl_testimonials[location]" id="wpl_testimonials_location" type="text" value="<?php esc_attr_e( $location ); ?>" class="regular-text"></td>
+					<td><input name="wpl_testimonials[location]" id="wpl_testimonials_location" type="text" value="<?php esc_attr_e( $testimonial->get_meta( 'location' ) ); ?>" class="regular-text"></td>
 				</tr>
 				<tr valign="top">
 					<th scope="row"><label for="wpl_testimonials_link"><?php esc_html_e( 'Link', 'wpl_testimonials' ); ?></label></th>
-					<td><input name="wpl_testimonials[link]" id="wpl_testimonials_link" type="url" value="<?php esc_attr_e( $link ); ?>" class="large-text" placeholder="http://"></td>
+					<td><input name="wpl_testimonials[link]" id="wpl_testimonials_link" type="url" value="<?php esc_attr_e( $testimonial->get_meta( 'link' ) ); ?>" class="large-text" placeholder="http://"></td>
 				</tr>
 			</tbody>
 		</table>
@@ -100,10 +99,12 @@ class WPL_Testimonals_Admin {
 			'link'     => ''
 		) );
 
-		update_post_meta( $post_id, '_wpl_testimonials_jobtitle', $values['jobtitle'] );
-		update_post_meta( $post_id, '_wpl_testimonials_company', $values['company'] );
-		update_post_meta( $post_id, '_wpl_testimonials_location', $values['location'] );
-		update_post_meta( $post_id, '_wpl_testimonials_link', $values['link'] );
+		$testimonial = new WPL_Testimonal( $post->ID );
+
+		$testimonial->update_meta( 'jobtitle', $values['jobtitle'] );
+		$testimonial->update_meta( 'company', $values['company'] );
+		$testimonial->update_meta( 'location', $values['location'] );
+		$testimonial->update_meta( 'link', $values['link'] );
 
 		return;
 

@@ -53,6 +53,9 @@ class WPL_Testimonals {
 		// Deprecated Blogroll Functionality
 		require_once( WPL_Testimonals::$DIR . 'includes/deprecated.php' );
 
+		// Includes
+		require_once( WPL_Testimonals::$DIR . 'includes/wpl-testimonial.class.php' );
+
 		// Global Actions
 		add_action( 'init', array( 'WPL_Testimonals', 'setup' ) );
 		add_filter( 'gettext', array( 'WPL_Testimonals', 'gettext' ), 5, 3 );
