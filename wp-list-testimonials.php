@@ -173,7 +173,7 @@ class WPL_Testimonals {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => true,
 			'menu_position'       => null,
-			'menu_icon'           => null, // @todo
+			'menu_icon'           => 'dashicons-format-quote',
 			'hierarchical'        => false,
 			'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions' ),
 			'has_archive'         => _x( 'testimonials', 'slug', 'wpl_testimonials' ),
