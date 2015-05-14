@@ -33,6 +33,10 @@ class WPL_Testimonals {
 	public static $URL = null;
 	public static $DIR = null;
 
+	// Vars
+	private static $POST_TYPE = 'wpl_testimonial';
+	private static $GROUP_TAX = 'wpl_testimonial_group';
+
 	/**
 	 * Load
 	 */
@@ -64,6 +68,28 @@ class WPL_Testimonals {
 	}
 
 	/**
+	 * Post Type
+	 *
+	 * @return  string  Post type.
+	 */
+	public static function post_type() {
+
+		return self::$POST_TYPE;
+
+	}
+
+	/**
+	 * Group Taxonomy
+	 *
+	 * @return  string  Group taxonomy.
+	 */
+	public static function group_tax() {
+
+		return self::$GROUP_TAX;
+
+	}
+
+	/**
 	 * Text String Filter
 	 */
 	function gettext( $translated_text, $text, $domain ) {
@@ -74,7 +100,7 @@ class WPL_Testimonals {
 			if ( ! is_object( $screen ) )
 				return $translated_text;
 
-			if ( $screen->id == 'wpl_testimonial' ) {
+			if ( $screen->id == self::post_type() ) {
 				switch ( $translated_text ) {
 					case 'Enter title here' :
 						$translated_text = __( 'Enter name here', 'wpl_testimonials' );
@@ -134,7 +160,7 @@ class WPL_Testimonals {
 			),
 			'query_var'           => true
 		); 
-		register_post_type( 'wpl_testimonial', apply_filters( 'wpl_testimonals_post_type_args', $args ) );
+		register_post_type( self::post_type(), apply_filters( 'wpl_testimonals_post_type_args', $args ) );
 	}
 
 	/**
@@ -165,7 +191,7 @@ class WPL_Testimonals {
 				'with_front' => false
 			),
 		);
-		register_taxonomy( 'wpl_testimonial_group', array( 'wpl_testimonial' ), apply_filters( 'wpl_testimonals_taxonomy_group_args', $args ) );
+		register_taxonomy( self::group_tax(), array( self::post_type() ), apply_filters( 'wpl_testimonals_taxonomy_group_args', $args ) );
 	}
 
 }
