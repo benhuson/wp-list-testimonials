@@ -33,7 +33,7 @@ class WP_List_Testimonials {
 	/**
 	 * Constructor
 	 */
-	function WP_List_Testimonials() {
+	public function __construct() {
 
 		// Check WordPress version
 		if ( version_compare( get_bloginfo( 'version' ), '2.7.2', '>' ) ) {
@@ -44,7 +44,7 @@ class WP_List_Testimonials {
 	/**
 	 * Get Testimonials HTML
 	 */
-	function get_testimonials_html( $args = '' ) {
+	public function get_testimonials_html( $args = '' ) {
 		extract( wp_parse_args( $args ), EXTR_SKIP );
 
 		$output = '';
@@ -86,7 +86,7 @@ class WP_List_Testimonials {
 	/**
 	 * Widgets Init
 	 */
-	function widgets_init() {
+	public function widgets_init() {
 		global $wp_list_testimonials;
 
 		if ( $wp_list_testimonials->is_wp_2_8 ) {
@@ -115,7 +115,7 @@ if ( class_exists('WP_Widget') ) {
 		/**
 		 * Constructor
 		 */
-		function WP_List_Testimonials_Widget() {
+		public function __construct() {
 			$widget_ops = array(
 				'classname' => 'widget_testimonials',
 				'description' => 'Add testimonials to your sidebar.'
@@ -126,7 +126,7 @@ if ( class_exists('WP_Widget') ) {
 		/**
 		 * Output Widget
 		 */
-		function widget( $args, $instance ) {
+		public function widget( $args, $instance ) {
 			global $wp_list_testimonials;
 
 			extract( $args, EXTR_SKIP );
@@ -167,7 +167,7 @@ if ( class_exists('WP_Widget') ) {
 		/**
 		 * Update Widget Settings
 		 */
-		function update( $new_instance, $old_instance ) {
+		public function update( $new_instance, $old_instance ) {
 			$instance = $old_instance;
 
 			$instance['title']    = strip_tags( $new_instance['title'] );
@@ -181,7 +181,7 @@ if ( class_exists('WP_Widget') ) {
 		/**
 		 * Widget Settings
 		 */
-		function form( $instance ) {
+		public function form( $instance ) {
 			$instance = wp_parse_args( (array)$instance, array( 'title' => '' ) );
 
 			$title    = strip_tags( $instance['title'] );

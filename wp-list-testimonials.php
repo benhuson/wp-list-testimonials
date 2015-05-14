@@ -40,7 +40,7 @@ class WPL_Testimonals {
 	/**
 	 * Load
 	 */
-	function load() {
+	public static function load() {
 
 		// Define Paths
 		WPL_Testimonals::$SUBDIR = '/' . str_replace( basename( __FILE__ ), '', plugin_basename( __FILE__ ) );
@@ -92,7 +92,7 @@ class WPL_Testimonals {
 	/**
 	 * Text String Filter
 	 */
-	function gettext( $translated_text, $text, $domain ) {
+	public static function gettext( $translated_text, $text, $domain ) {
 		if ( is_admin() ) {
 			$screen = '';
 			if ( function_exists( 'get_current_screen' ) )
@@ -114,7 +114,7 @@ class WPL_Testimonals {
 	/**
 	 * Setup
 	 */
-	function setup() {
+	public static function setup() {
 		WPL_Testimonals::register_testimonal_post_type();
 		WPL_Testimonals::register_testimonal_group_taxonomy();
 	}
@@ -122,7 +122,7 @@ class WPL_Testimonals {
 	/**
 	 * Register Testimonal Post Type
 	 */
-	function register_testimonal_post_type() {
+	public static function register_testimonal_post_type() {
 		$labels = array(
 			'name'               => __( 'Testimonals', 'wpl_testimonials' ),
 			'singular_name'      => __( 'Testimonal', 'wpl_testimonials' ),
@@ -166,7 +166,7 @@ class WPL_Testimonals {
 	/**
 	 * Register Testimonal Group Taxonomy
 	 */
-	function register_testimonal_group_taxonomy() {
+	public static function register_testimonal_group_taxonomy() {
 		$labels = array(
 			'name'              => _x( 'Groups', 'taxonomy general name' ),
 			'singular_name'     => _x( 'Group', 'taxonomy singular name' ),
