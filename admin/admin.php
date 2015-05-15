@@ -134,7 +134,7 @@ class WPL_Testimonals_Admin {
 			'link'     => ''
 		) );
 
-		$testimonial = new WPL_Testimonal( $post->ID );
+		$testimonial = new WPL_Testimonal( $post_id );
 
 		$testimonial->update_meta( 'jobtitle', $values['jobtitle'] );
 		$testimonial->update_meta( 'company', $values['company'] );
