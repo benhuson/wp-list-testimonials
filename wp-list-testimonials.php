@@ -178,7 +178,7 @@ class WPL_Testimonals {
 			'menu_position'       => null,
 			'menu_icon'           => 'dashicons-format-quote',
 			'hierarchical'        => false,
-			'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions' ),
+			'supports'            => array( 'title', 'thumbnail', 'revisions' ),
 			'has_archive'         => _x( 'testimonials', 'slug', 'wpl_testimonials' ),
 			'rewrite'             => array(
 				'slug'       => _x( 'testimonials', 'slug', 'wpl_testimonials' ),

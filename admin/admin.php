@@ -10,8 +10,43 @@ class WPL_Testimonals_Admin {
 	 */
 	public static function load() {
 
+		add_action( 'edit_form_after_title', array( 'WPL_Testimonals_Admin', 'edit_form_after_title' ) );
+		add_filter( 'teeny_mce_buttons', array( 'WPL_Testimonals_Admin', 'teeny_mce_buttons' ) );
 		add_action( 'add_meta_boxes', array( 'WPL_Testimonals_Admin', 'add_meta_boxes' ) );
 		add_action( 'save_post', array( 'WPL_Testimonals_Admin', 'save_post' ) );
+
+	}
+
+	/**
+	 * Edit Form After Title
+	 */
+	public static function edit_form_after_title() {
+
+		global $post;
+
+		$content = $post->post_content;
+		$editor_id = 'content';
+
+		wp_editor( $content, $editor_id, array(
+			'teeny'         => true,
+			'textarea_rows' => 10
+		) );
+
+	}
+
+	/**
+	 * Teeny MCE Buttons
+	 *
+	 * @param   array  $buttons  Tiny MCE buttons.
+	 * @return  array            Filtered Tiny MCE buttons.
+	 */
+	public static function teeny_mce_buttons( $buttons ) {
+
+		$remove_buttons = apply_filters( 'wpl_testimonals_remove_teeny_mce_buttons', array( 'blockquote', 'fullscreen' ) );
+
+		$buttons = array_diff( $buttons, $remove_buttons );
+
+		return $buttons;
 
 	}
 
