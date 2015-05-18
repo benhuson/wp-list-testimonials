@@ -24,13 +24,17 @@ class WPL_Testimonals_Admin {
 
 		global $post;
 
-		$content = $post->post_content;
-		$editor_id = 'content';
+		if ( get_post_type( $post ) == WPL_Testimonals::post_type() ) {
 
-		wp_editor( $content, $editor_id, array(
-			'teeny'         => true,
-			'textarea_rows' => 10
-		) );
+			$content = $post->post_content;
+			$editor_id = 'content';
+
+			wp_editor( $content, $editor_id, array(
+				'teeny'         => true,
+				'textarea_rows' => 10
+			) );
+
+		}
 
 	}
 
