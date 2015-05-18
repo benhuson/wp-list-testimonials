@@ -3,17 +3,17 @@
 /**
  * WPL Testimonials Admin Class
  */
-class WPL_Testimonals_Admin {
+class WPL_Testimonials_Admin {
 
 	/**
 	 * Load
 	 */
 	public static function load() {
 
-		add_action( 'edit_form_after_title', array( 'WPL_Testimonals_Admin', 'edit_form_after_title' ) );
-		add_filter( 'teeny_mce_buttons', array( 'WPL_Testimonals_Admin', 'teeny_mce_buttons' ) );
-		add_action( 'add_meta_boxes', array( 'WPL_Testimonals_Admin', 'add_meta_boxes' ) );
-		add_action( 'save_post', array( 'WPL_Testimonals_Admin', 'save_post' ) );
+		add_action( 'edit_form_after_title', array( 'WPL_Testimonials_Admin', 'edit_form_after_title' ) );
+		add_filter( 'teeny_mce_buttons', array( 'WPL_Testimonials_Admin', 'teeny_mce_buttons' ) );
+		add_action( 'add_meta_boxes', array( 'WPL_Testimonials_Admin', 'add_meta_boxes' ) );
+		add_action( 'save_post', array( 'WPL_Testimonials_Admin', 'save_post' ) );
 
 	}
 
@@ -24,7 +24,7 @@ class WPL_Testimonals_Admin {
 
 		global $post;
 
-		if ( get_post_type( $post ) == WPL_Testimonals::post_type() ) {
+		if ( get_post_type( $post ) == WPL_Testimonials::post_type() ) {
 
 			$content = $post->post_content;
 			$editor_id = 'content';
@@ -60,7 +60,7 @@ class WPL_Testimonals_Admin {
 	 */
 	public static function add_meta_boxes() {
 
-		add_meta_box( 'wpl_testimonials_client', __( 'Testimonial Author Details', 'wpl_testimonials' ), array( 'WPL_Testimonals_Admin', 'testimonial_author_details_meta_box' ), 'wpl_testimonial', 'normal', 'high' );
+		add_meta_box( 'wpl_testimonials_client', __( 'Testimonial Author Details', 'wpl_testimonials' ), array( 'WPL_Testimonials_Admin', 'testimonial_author_details_meta_box' ), 'wpl_testimonial', 'normal', 'high' );
 
 	}
 
@@ -73,7 +73,7 @@ class WPL_Testimonals_Admin {
 
 		wp_nonce_field( plugin_basename( __FILE__ ), '_nonce_wpl_testimonials_client' );
 
-		$testimonial = new WPL_Testimonal( $post->ID );
+		$testimonial = new WPL_Testimonial( $post->ID );
 
 		?>
 
@@ -139,7 +139,7 @@ class WPL_Testimonals_Admin {
 			'link'     => ''
 		) );
 
-		$testimonial = new WPL_Testimonal( $post_id );
+		$testimonial = new WPL_Testimonial( $post_id );
 
 		$testimonial->update_meta( 'jobtitle', $values['jobtitle'] );
 		$testimonial->update_meta( 'company', $values['company'] );

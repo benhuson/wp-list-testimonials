@@ -3,7 +3,7 @@
 /**
  * WPL Testimonial Class
  */
-class WPL_Testimonal {
+class WPL_Testimonial {
 
 	/**
 	 * Post object

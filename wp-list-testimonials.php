@@ -24,12 +24,12 @@ GNU General Public License for more details.
 http://www.gnu.org/licenses/gpl.html
 */
 
-add_action( 'plugins_loaded', array( 'WPL_Testimonals', 'load' ), 5 );
+add_action( 'plugins_loaded', array( 'WPL_Testimonials', 'load' ), 5 );
 
 /**
  * WPL Testimonials Class
  */
-class WPL_Testimonals {
+class WPL_Testimonials {
 
 	// Paths
 	public static $SUBDIR = null;
@@ -46,27 +46,27 @@ class WPL_Testimonals {
 	public static function load() {
 
 		// Define Paths
-		WPL_Testimonals::$SUBDIR = '/' . str_replace( basename( __FILE__ ), '', plugin_basename( __FILE__ ) );
-		WPL_Testimonals::$URL = plugins_url( WPL_Testimonals::$SUBDIR );
-		WPL_Testimonals::$DIR = plugin_dir_path( __FILE__ );
+		WPL_Testimonials::$SUBDIR = '/' . str_replace( basename( __FILE__ ), '', plugin_basename( __FILE__ ) );
+		WPL_Testimonials::$URL = plugins_url( WPL_Testimonials::$SUBDIR );
+		WPL_Testimonials::$DIR = plugin_dir_path( __FILE__ );
 
 		// Deprecated Blogroll Functionality
-		require_once( WPL_Testimonals::$DIR . 'includes/deprecated.php' );
+		require_once( WPL_Testimonials::$DIR . 'includes/deprecated.php' );
 
 		// Includes
-		require_once( WPL_Testimonals::$DIR . 'includes/wpl-testimonial.class.php' );
+		require_once( WPL_Testimonials::$DIR . 'includes/wpl-testimonial.class.php' );
 
 		// Global Actions
-		add_action( 'init', array( 'WPL_Testimonals', 'setup' ) );
-		add_filter( 'gettext', array( 'WPL_Testimonals', 'gettext' ), 5, 3 );
+		add_action( 'init', array( 'WPL_Testimonials', 'setup' ) );
+		add_filter( 'gettext', array( 'WPL_Testimonials', 'gettext' ), 5, 3 );
 
 		// Admin / AJAX / Front end only
 		if ( is_admin() ) {
 			if ( defined('DOING_AJAX') && DOING_AJAX ) {
 				// AJAX only
 			} else {
-				require_once( WPL_Testimonals::$DIR . 'admin/admin.php' );
-				WPL_Testimonals_Admin::load();
+				require_once( WPL_Testimonials::$DIR . 'admin/admin.php' );
+				WPL_Testimonials_Admin::load();
 			}
 		} else {
 			// Front end only
@@ -141,8 +141,8 @@ class WPL_Testimonals {
 	 */
 	public static function setup() {
 
-		WPL_Testimonals::register_testimonal_post_type();
-		WPL_Testimonals::register_testimonal_group_taxonomy();
+		WPL_Testimonials::register_testimonal_post_type();
+		WPL_Testimonials::register_testimonal_group_taxonomy();
 
 	}
 
