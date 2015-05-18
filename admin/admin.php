@@ -46,9 +46,10 @@ class WPL_Testimonals_Admin {
 	 */
 	public static function teeny_mce_buttons( $buttons ) {
 
+		$add_buttons = apply_filters( 'wpl_testimonals_add_teeny_mce_buttons', array( 'removeformat' ) );
 		$remove_buttons = apply_filters( 'wpl_testimonals_remove_teeny_mce_buttons', array( 'blockquote', 'fullscreen' ) );
 
-		$buttons = array_diff( $buttons, $remove_buttons );
+		$buttons = array_unique( array_diff( array_merge( $buttons, $add_buttons ), $remove_buttons ) );
 
 		return $buttons;
 
