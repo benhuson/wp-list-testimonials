@@ -1,6 +1,6 @@
 === WP List Testimonials  ===
 Contributors: husobj
-Donate link: http://www.benhuson.co.uk/wordpress-plugins/wp-list-testimonials/
+Donate link: https://github.com/benhuson/wp-list-testimonials
 Tags: blogroll, links, testimonials, quotes, blockquotes
 Requires at least: 3.4
 Tested up to: 3.5.2

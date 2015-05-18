@@ -2,7 +2,7 @@
 
 /*
 Plugin Name: WP List Testimonials
-Plugin URI: http://www.benhuson.co.uk/wordpress-plugins/wp-list-testimonials/
+Plugin URI: https://github.com/benhuson/wp-list-testimonials
 Description: Manage and display testimonials on your site.
 Version: 2.0.dev
 Author: Ben Huson
